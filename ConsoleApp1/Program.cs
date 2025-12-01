@@ -65,4 +65,25 @@ namespace ConsoleApp1
             Console.WriteLine("Игра завершена!");
         }
 
+        private static void ShowInventory(object player)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ShowStoreMenu(object player)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ProcessNextCar(object player)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ShowPlayerStatus(object player)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
