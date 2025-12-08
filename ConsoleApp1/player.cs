@@ -25,5 +25,6 @@ namespace ConsoleApp1
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<parts_player> parts_player { get; set; }
+        public object MyMoney { get; internal set; }
     }
 }

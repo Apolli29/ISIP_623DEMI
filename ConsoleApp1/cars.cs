@@ -19,5 +19,7 @@ namespace ConsoleApp1
         public int ID_Defect { get; set; }
     
         public virtual defects defects { get; set; }
+        public object carName { get; internal set; }
+        public object defectID { get; internal set; }
     }
 }

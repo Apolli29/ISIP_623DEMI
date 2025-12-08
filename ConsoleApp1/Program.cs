@@ -84,6 +84,71 @@ namespace ConsoleApp1
         {
             throw new NotImplementedException();
         }
+
+        private static void ShowPlayerStatus(player player)
+        {
+            Console.WriteLine($"АВТОСЕРВИС");
+            Console.WriteLine($"Баланс: {player.MyMoney} руб.");
+            Console.WriteLine($"Обслужено машин: {carsProcessed}");
+            Console.WriteLine($"Успешные ремонты: {successfulRepairs}");
+            Console.WriteLine($"Неудачные ремонты: {failedRepairs}");
+
+            var pendingOrders = Core.Context.OrderParts.Where(o => o.PlayerID == 1).ToList();
+            if (pendingOrders.Any())
+            {
+                Console.WriteLine("\nОжидаются поставки:");
+                foreach (var order in pendingOrders)
+                {
+                    var part = Core.Context.parts.FirstOrDefault(p => p.partID == order.PartID);
+                    Console.WriteLine($"{part.partName}: {order.count} шт. (через {order.carsUntilDelivery} машин)");
+                }
+            }
+        }
+        private static void ProcessNextCar(player player)
+        {
+            Console.Clear();
+
+
+            ProcessDeliveries(player);
+
+            // случ клиент
+            var clientCar = GenerateRandomClient();
+            carsProcessed++;
+
+            ShowClientInfo(clientCar);
+            ProcessPlayerChoice(player, clientCar);
+        }
+
+        private static void ProcessPlayerChoice(player player, object clientCar)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ShowClientInfo(object clientCar)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ProcessDeliveries(player player)
+        {
+            throw new NotImplementedException();
+        }
+        private static cars GenerateRandomClient()
+        {
+            var defects = Core.Context.defects.ToList();
+            var carsList = Core.Context.cars.ToList();
+
+            var randomDefect = defects[random.Next(defects.Count)];
+            var randomCar = carsList[random.Next(carsList.Count)];
+
+            return new cars
+            {
+                carName = randomCar.carName,
+                defectID = randomDefect.id
+            };
+        }
+
     }
+
 
 

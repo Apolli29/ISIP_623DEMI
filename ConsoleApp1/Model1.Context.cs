@@ -10,6 +10,7 @@
 namespace ConsoleApp1
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
@@ -36,5 +37,6 @@ namespace ConsoleApp1
         public virtual DbSet<parts_player> parts_player { get; set; }
         public virtual DbSet<player> player { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public IEnumerable<object> OrderParts { get; internal set; }
     }
 }
