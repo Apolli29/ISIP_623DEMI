@@ -210,6 +210,41 @@ namespace ConsoleApp1
                 Console.WriteLine("Штраф 1000 руб.");
             }
         }
+        private static void TryRepair(player player, cars clientCar, int selectedPartId, int neededPartId)
+        {
+            var inventory = Core.Context.parts_player.FirstOrDefault(i => i.idPlayer == player.id && i.idPart == selectedPartId);
+
+            if (inventory == null || inventory.countParts <= 0)
+            {
+                player.MyMoney -= 1000;
+                Console.WriteLine("Недостаточно деталей! Штраф 1000 руб.");
+                Core.Context.SaveChanges();
+                return;
+            }
+
+            inventory.countParts--;
+
+            bool isCorrectPart = (selectedPartId == neededPartId);
+
+            if (isCorrectPart)
+            {
+                var part = Core.Context.parts.FirstOrDefault(p => p.partID == selectedPartId);
+                var repairCost = CalculateRepairCost(part);
+                player.MyMoney += repairCost;
+                Console.WriteLine($"Успешный ремонт! Получено {repairCost} руб.");
+                successfulRepairs++;
+            }
+            else
+            {
+                var part = Core.Context.parts.FirstOrDefault(p => p.partID == selectedPartId);
+                var penalty = part.basePrice * 2;
+                player.MyMoney -= penalty;
+                Console.WriteLine($"Неправильная деталь! Штраф {penalty} руб.");
+                failedRepairs++;
+            }
+
+            Core.Context.SaveChanges();
+        }
 
     }
 
