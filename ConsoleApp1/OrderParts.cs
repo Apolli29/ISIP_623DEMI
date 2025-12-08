@@ -12,18 +12,12 @@ namespace ConsoleApp1
     using System;
     using System.Collections.Generic;
     
-    public partial class player
+    public partial class OrderParts
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public player()
-        {
-            this.parts_player = new HashSet<parts_player>();
-        }
-    
         public int ID { get; set; }
-        public decimal cash { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<parts_player> parts_player { get; set; }
+        public int PlayerID { get; set; }
+        public int PartID { get; set; }
+        public int count { get; set; }
+        public int carsUntilDeivery { get; set; }
     }
 }

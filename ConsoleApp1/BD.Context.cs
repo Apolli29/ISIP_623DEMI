@@ -10,14 +10,13 @@
 namespace ConsoleApp1
 {
     using System;
-    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class praktika7_DemEntities : DbContext
+    public partial class praktika7_DemEntities1 : DbContext
     {
-        public praktika7_DemEntities()
-            : base("name=praktika7_DemEntities")
+        public praktika7_DemEntities1()
+            : base("name=praktika7_DemEntities1")
         {
         }
     
@@ -33,10 +32,10 @@ namespace ConsoleApp1
 
         public virtual DbSet<cars> cars { get; set; }
         public virtual DbSet<defects> defects { get; set; }
+        public virtual DbSet<OrderParts> OrderParts { get; set; }
         public virtual DbSet<parts> parts { get; set; }
         public virtual DbSet<parts_player> parts_player { get; set; }
         public virtual DbSet<player> player { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public IEnumerable<object> OrderParts { get; internal set; }
     }
 }

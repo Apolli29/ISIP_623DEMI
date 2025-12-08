@@ -88,7 +88,7 @@ namespace ConsoleApp1
         private static void ShowPlayerStatus(player player)
         {
             Console.WriteLine($"АВТОСЕРВИС");
-            Console.WriteLine($"Баланс: {player.MyMoney} руб.");
+            Console.WriteLine($"Баланс: {player.cash} руб.");
             Console.WriteLine($"Обслужено машин: {carsProcessed}");
             Console.WriteLine($"Успешные ремонты: {successfulRepairs}");
             Console.WriteLine($"Неудачные ремонты: {failedRepairs}");
@@ -129,10 +129,6 @@ namespace ConsoleApp1
             throw new NotImplementedException();
         }
 
-        private static void ProcessDeliveries(player player)
-        {
-            throw new NotImplementedException();
-        }
         private static cars GenerateRandomClient()
         {
             var defects = Core.Context.defects.ToList();
@@ -143,17 +139,17 @@ namespace ConsoleApp1
 
             return new cars
             {
-                carName = randomCar.carName,
-                defectID = randomDefect.id
+                Name_car = randomCar.carName,
+                ID_Defect = randomDefect.ID
             };
         }
         private static void ShowClientInfo(cars car)
         {
-            var defect = Core.Context.defects.FirstOrDefault(d => d.id == car.defectID);
+            var defect = Core.Context.defects.FirstOrDefault(d => d.ID == car.ID_Defect);
             var neededPart = Core.Context.parts.FirstOrDefault(p => p.partID == defect.partNeedID);
             var repairCost = CalculateRepairCost(neededPart);
 
-            Console.WriteLine($"Приехал клиент на {car.carName}");
+            Console.WriteLine($"Приехал клиент на {car.Name_car}");
             Console.WriteLine($"Неисправность: {defect.defectName}");
             Console.WriteLine($"Нужна деталь: {neededPart.partName}");
             Console.WriteLine($"Стоимость ремонта: {repairCost} руб.");
@@ -161,16 +157,16 @@ namespace ConsoleApp1
         }
         private static decimal CalculateRepairCost(parts part)
         {
-            return part.basePrice + (part.basePrice * (decimal)(part.workCost));
+            return part.Price + (part.Price * (decimal)(part.Work_cost));
         }
 
         private static void ProcessPlayerChoice(player player, cars clientCar)
         {
-            var defect = Core.Context.defects.FirstOrDefault(d => d.id == clientCar.defectID);
+            var defect = Core.Context.defects.FirstOrDefault(d => d.ID == clientCar.ID_Defect);
             var neededPartId = defect.partNeedID;
 
             Console.WriteLine("Ваш склад:");
-            var inventory = Core.Context.parts_player.Where(i => i.idPlayer == player.id && i.countParts > 0).ToList();
+            var inventory = Core.Context.parts_player.Where(i => i.idPlayer == player.ID && i.countParts > 0).ToList();
 
             if (inventory.Any())
             {
@@ -190,7 +186,7 @@ namespace ConsoleApp1
                     if (choice == 0)
                     {
                         // Отказ от обслуживания
-                        player.MyMoney -= 1000;
+                        player.cash -= 1000;
                         Core.Context.SaveChanges();
                         Console.WriteLine("Вы отказали клиенту. Штраф 1000 руб.");
                     }
@@ -205,18 +201,18 @@ namespace ConsoleApp1
             else
             {
                 Console.WriteLine("Склад пуст! Придется отказать клиенту.");
-                player.MyMoney -= 1000;
+                player.cash -= 1000;
                 Core.Context.SaveChanges();
                 Console.WriteLine("Штраф 1000 руб.");
             }
         }
         private static void TryRepair(player player, cars clientCar, int selectedPartId, int neededPartId)
         {
-            var inventory = Core.Context.parts_player.FirstOrDefault(i => i.idPlayer == player.id && i.idPart == selectedPartId);
+            var inventory = Core.Context.parts_player.FirstOrDefault(i => i.idPlayer == player.ID && i.idPart == selectedPartId);
 
             if (inventory == null || inventory.countParts <= 0)
             {
-                player.MyMoney -= 1000;
+                player.cash -= 1000;
                 Console.WriteLine("Недостаточно деталей! Штраф 1000 руб.");
                 Core.Context.SaveChanges();
                 return;
@@ -230,7 +226,7 @@ namespace ConsoleApp1
             {
                 var part = Core.Context.parts.FirstOrDefault(p => p.partID == selectedPartId);
                 var repairCost = CalculateRepairCost(part);
-                player.MyMoney += repairCost;
+                player.cash += repairCost;
                 Console.WriteLine($"Успешный ремонт! Получено {repairCost} руб.");
                 successfulRepairs++;
             }
@@ -238,7 +234,7 @@ namespace ConsoleApp1
             {
                 var part = Core.Context.parts.FirstOrDefault(p => p.partID == selectedPartId);
                 var penalty = part.basePrice * 2;
-                player.MyMoney -= penalty;
+                player.cash -= penalty;
                 Console.WriteLine($"Неправильная деталь! Штраф {penalty} руб.");
                 failedRepairs++;
             }
@@ -271,16 +267,16 @@ namespace ConsoleApp1
             var part = Core.Context.parts.FirstOrDefault(p => p.partID == partId);
             var totalCost = part.basePrice * quantity;
 
-            if (player.MyMoney >= totalCost)
+            if (player.cash >= totalCost)
             {
-                player.MyMoney -= totalCost;
+                player.cash -= totalCost;
 
                 var pendingOrder = new OrderParts
                 {
-                    PlayerID = player.id,
+                    PlayerID = player.ID,
                     PartID = partId,
                     count = quantity,
-                    carsUntilDelivery = 2
+                    carsUntilDeivery = 2
                 };
                 Core.Context.OrderParts.Add(pendingOrder);
 
@@ -294,7 +290,7 @@ namespace ConsoleApp1
         }
         private static void ProcessDeliveries(player player)
         {
-            var orders = Core.Context.OrderParts.Where(o => o.PlayerID == player.id).ToList();
+            var orders = Core.Context.OrderParts.Where(o => o.PlayerID == player.ID).ToList();
             foreach (var order in orders)
             {
                 order.carsUntilDelivery--;
@@ -302,15 +298,15 @@ namespace ConsoleApp1
                 {
                     // Доставляем детали на склад
                     var inventory = Core.Context.parts_player.FirstOrDefault(i =>
-                        i.idPlayer == player.id && i.idPart == order.PartID);
+                        i.idPlayer == player.ID && i.idPart == order.PartID);
 
                     if (inventory == null)
                     {
                         inventory = new parts_player
                         {
-                            idPlayer = player.id,
-                            idPart = order.PartID,
-                            countParts = 0
+                            ID_player = player.ID,
+                            ID_part = order.PartID,
+                            count = 0
                         };
                         Core.Context.parts_player.Add(inventory);
                     }
@@ -333,6 +329,7 @@ namespace ConsoleApp1
             }
         }
     }
+
 }
 
 
