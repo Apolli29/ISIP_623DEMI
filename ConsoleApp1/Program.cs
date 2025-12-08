@@ -266,6 +266,33 @@ namespace ConsoleApp1
                 }
             }
         }
+        private static void PurchaseParts(player player, int partId, int quantity)
+        {
+            var part = Core.Context.parts.FirstOrDefault(p => p.partID == partId);
+            var totalCost = part.basePrice * quantity;
+
+            if (player.MyMoney >= totalCost)
+            {
+                player.MyMoney -= totalCost;
+
+                var pendingOrder = new OrderParts
+                {
+                    PlayerID = player.id,
+                    PartID = partId,
+                    count = quantity,
+                    carsUntilDelivery = 2
+                };
+                Core.Context.OrderParts.Add(pendingOrder);
+
+                Core.Context.SaveChanges();
+                Console.WriteLine($"Заказ на {quantity} {part.partName} создан! Поставка через 2 машины.");
+            }
+            else
+            {
+                Console.WriteLine("Недостаточно денег!");
+            }
+        }
+
     }
 
 
