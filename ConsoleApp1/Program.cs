@@ -321,7 +321,20 @@ namespace ConsoleApp1
             }
             Core.Context.SaveChanges();
         }
+        private static void ShowInventory(player player)
+        {
+            var inventory = Core.Context.parts_player.Where(i => i.idPlayer == 1).ToList();
+            Console.WriteLine("Ваш склад:");
+
+            foreach (var item in inventory)
+            {
+                var part = Core.Context.parts.FirstOrDefault(p => p.partID == item.idPart);
+                Console.WriteLine($"{part.partName}: {item.countParts} шт.");
+            }
+        }
     }
+}
+
 
 
 
