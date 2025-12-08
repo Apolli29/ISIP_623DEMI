@@ -245,7 +245,27 @@ namespace ConsoleApp1
 
             Core.Context.SaveChanges();
         }
+        private static void ShowStoreMenu(player player)
+        {
+            Console.Clear();
+            var availableParts = Core.Context.parts.ToList();
+            Console.WriteLine("Доступные запчасти:");
 
+            for (int i = 0; i < availableParts.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {availableParts[i].partName} - {availableParts[i].basePrice} руб.");
+            }
+
+            Console.WriteLine("\nВведите номер детали для покупки (0 - отмена):");
+            if (int.TryParse(Console.ReadLine(), out int partChoice) && partChoice > 0 && partChoice <= availableParts.Count)
+            {
+                Console.WriteLine("Введите количество:");
+                if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
+                {
+                    PurchaseParts(player, availableParts[partChoice - 1].partID, quantity);
+                }
+            }
+        }
     }
 
 
