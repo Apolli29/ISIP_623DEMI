@@ -17,7 +17,7 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            var player = Core.Context.player.FirstOrDefault();
+            var player = Core.Context.player.FirstOrDefault(p => p.ID == player.ID);
             if (player == null)
             {
                 player = new player { cash = 5000 };
