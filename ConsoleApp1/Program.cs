@@ -147,6 +147,18 @@ namespace ConsoleApp1
                 defectID = randomDefect.id
             };
         }
+        private static void ShowClientInfo(cars car)
+        {
+            var defect = Core.Context.defects.FirstOrDefault(d => d.id == car.defectID);
+            var neededPart = Core.Context.parts.FirstOrDefault(p => p.partID == defect.partNeedID);
+            var repairCost = CalculateRepairCost(neededPart);
+
+            Console.WriteLine($"Приехал клиент на {car.carName}");
+            Console.WriteLine($"Неисправность: {defect.defectName}");
+            Console.WriteLine($"Нужна деталь: {neededPart.partName}");
+            Console.WriteLine($"Стоимость ремонта: {repairCost} руб.");
+            Console.WriteLine();
+        }
 
     }
 
