@@ -147,7 +147,7 @@ namespace ConsoleApp1
                 defectID = randomDefect.id
             };
         }
-        
+
     }
 
 
