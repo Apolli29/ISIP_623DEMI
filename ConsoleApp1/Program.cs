@@ -159,6 +159,57 @@ namespace ConsoleApp1
             Console.WriteLine($"Стоимость ремонта: {repairCost} руб.");
             Console.WriteLine();
         }
+        private static decimal CalculateRepairCost(parts part)
+        {
+            return part.basePrice + (part.basePrice * (decimal)(part.workCost));
+        }
+
+        private static void ProcessPlayerChoice(player player, cars clientCar)
+        {
+            var defect = Core.Context.defects.FirstOrDefault(d => d.id == clientCar.defectID);
+            var neededPartId = defect.partNeedID;
+
+            Console.WriteLine("Ваш склад:");
+            var inventory = Core.Context.parts_player.Where(i => i.idPlayer == player.id && i.countParts > 0).ToList();
+
+            if (inventory.Any())
+            {
+                int index = 1;
+                foreach (var item in inventory)
+                {
+                    var part = Core.Context.parts.FirstOrDefault(p => p.partID == item.idPart);
+                    Console.WriteLine($"{index}. {part.partName} - {item.countParts} шт.");
+                    index++;
+                }
+
+                Console.WriteLine($"0. Отказать (штраф 1000 руб.)");
+                Console.WriteLine("Выберите деталь для замены:");
+
+                if (int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    if (choice == 0)
+                    {
+                        // Отказ от обслуживания
+                        player.MyMoney -= 1000;
+                        Core.Context.SaveChanges();
+                        Console.WriteLine("Вы отказали клиенту. Штраф 1000 руб.");
+                    }
+                    else if (choice > 0 && choice <= inventory.Count)
+                    {
+                        var selectedItem = inventory[choice - 1];
+                        var selectedPartId = selectedItem.idPart;
+                        TryRepair(player, clientCar, selectedPartId, (int)neededPartId);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Склад пуст! Придется отказать клиенту.");
+                player.MyMoney -= 1000;
+                Core.Context.SaveChanges();
+                Console.WriteLine("Штраф 1000 руб.");
+            }
+        }
 
     }
 
