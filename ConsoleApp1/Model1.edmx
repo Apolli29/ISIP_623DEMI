@@ -4,12 +4,12 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище praktika7_DemModel1" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище praktika7_DemModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="cars">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name_car" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ID_Defect" Type="int" Nullable="false" />
         </EntityType>
@@ -17,7 +17,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name_defect" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ID_part_need" Type="int" Nullable="false" />
         </EntityType>
@@ -35,24 +35,26 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name_part" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="Work_cost" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="parts_player">
           <Key>
-            <PropertyRef Name="ID_part" />
+            <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID_part" Type="int" Nullable="false" />
           <Property Name="count" Type="int" Nullable="false" />
           <Property Name="ID_player" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="carsUntilDeivery" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="player">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="cash" Type="decimal" Precision="18" Scale="0" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
@@ -113,7 +115,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Хранилище praktika7_DemModel1Container">
+        <EntityContainer Name="Хранилище praktika7_DemModelContainer">
           <EntitySet Name="cars" EntityType="Self.cars" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="defects" EntityType="Self.defects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderParts" EntityType="Self.OrderParts" Schema="dbo" store:Type="Tables" />
@@ -142,12 +144,12 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="praktika7_DemModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="praktika7_DemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="cars">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name_car" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ID_Defect" Type="Int32" Nullable="false" />
           <NavigationProperty Name="defects" Relationship="Self.FK_cars_defects" FromRole="cars" ToRole="defects" />
@@ -156,7 +158,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name_defect" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ID_part_need" Type="Int32" Nullable="false" />
           <NavigationProperty Name="cars" Relationship="Self.FK_cars_defects" FromRole="defects" ToRole="cars" />
@@ -176,7 +178,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name_part" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <Property Name="Work_cost" Type="Double" Nullable="false" />
@@ -185,11 +187,13 @@
         </EntityType>
         <EntityType Name="parts_player">
           <Key>
-            <PropertyRef Name="ID_part" />
+            <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID_part" Type="Int32" Nullable="false" />
           <Property Name="count" Type="Int32" Nullable="false" />
           <Property Name="ID_player" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="carsUntilDeivery" Type="Int32" Nullable="false" />
           <NavigationProperty Name="parts" Relationship="Self.FK_parts_player_parts" FromRole="parts_player" ToRole="parts" />
           <NavigationProperty Name="player" Relationship="Self.FK_parts_player_player" FromRole="parts_player" ToRole="player" />
         </EntityType>
@@ -197,7 +201,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="cash" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
           <NavigationProperty Name="parts_player" Relationship="Self.FK_parts_player_player" FromRole="player" ToRole="parts_player" />
         </EntityType>
@@ -289,9 +293,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище praktika7_DemModel1Container" CdmEntityContainer="praktika7_DemEntities1">
+        <EntityContainerMapping StorageEntityContainer="Хранилище praktika7_DemModelContainer" CdmEntityContainer="praktika7_DemEntities1">
           <EntitySetMapping Name="cars">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.cars">
+            <EntityTypeMapping TypeName="praktika7_DemModel.cars">
               <MappingFragment StoreEntitySet="cars">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name_car" ColumnName="Name_car" />
@@ -300,7 +304,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="defects">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.defects">
+            <EntityTypeMapping TypeName="praktika7_DemModel.defects">
               <MappingFragment StoreEntitySet="defects">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name_defect" ColumnName="Name_defect" />
@@ -309,7 +313,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OrderParts">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.OrderParts">
+            <EntityTypeMapping TypeName="praktika7_DemModel.OrderParts">
               <MappingFragment StoreEntitySet="OrderParts">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
@@ -320,7 +324,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="parts">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.parts">
+            <EntityTypeMapping TypeName="praktika7_DemModel.parts">
               <MappingFragment StoreEntitySet="parts">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name_part" ColumnName="Name_part" />
@@ -330,16 +334,18 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="parts_player">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.parts_player">
+            <EntityTypeMapping TypeName="praktika7_DemModel.parts_player">
               <MappingFragment StoreEntitySet="parts_player">
                 <ScalarProperty Name="ID_part" ColumnName="ID_part" />
                 <ScalarProperty Name="count" ColumnName="count" />
                 <ScalarProperty Name="ID_player" ColumnName="ID_player" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="carsUntilDeivery" ColumnName="carsUntilDeivery" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="player">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.player">
+            <EntityTypeMapping TypeName="praktika7_DemModel.player">
               <MappingFragment StoreEntitySet="player">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="cash" ColumnName="cash" />
@@ -347,7 +353,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="praktika7_DemModel1.sysdiagrams">
+            <EntityTypeMapping TypeName="praktika7_DemModel.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />

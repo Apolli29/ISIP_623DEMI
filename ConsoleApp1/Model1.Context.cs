@@ -24,12 +24,7 @@ namespace ConsoleApp1
         {
             throw new UnintentionalCodeFirstException();
         }
-
-        internal void SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
-
+    
         public virtual DbSet<cars> cars { get; set; }
         public virtual DbSet<defects> defects { get; set; }
         public virtual DbSet<OrderParts> OrderParts { get; set; }

@@ -65,26 +65,6 @@ namespace ConsoleApp1
             Console.WriteLine("Игра завершена!");
         }
 
-        private static void ShowInventory(object player)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void ShowStoreMenu(object player)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void ProcessNextCar(object player)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void ShowPlayerStatus(object player)
-        {
-            throw new NotImplementedException();
-        }
-
         private static void ShowPlayerStatus(player player)
         {
             Console.WriteLine($"АВТОСЕРВИС");
@@ -93,13 +73,13 @@ namespace ConsoleApp1
             Console.WriteLine($"Успешные ремонты: {successfulRepairs}");
             Console.WriteLine($"Неудачные ремонты: {failedRepairs}");
 
-            var pendingOrders = Core.Context.OrderParts.Where(o => o.PlayerID == 1).ToList();
+            var pendingOrders = Core.Context.parts_player.Where(o => o.ID == 1).ToList();
             if (pendingOrders.Any())
             {
                 Console.WriteLine("\nОжидаются поставки:");
                 foreach (var order in pendingOrders)
                 {
-                    var part = Core.Context.parts.FirstOrDefault(p => p.ID == order.PartID);
+                    var part = Core.Context.parts_player.FirstOrDefault(p => p.ID == order.ID_part);
                     Console.WriteLine($"{part.Name_part}: {order.count} шт. (через {order.carsUntilDeivery} машин)");
                 }
             }
@@ -119,15 +99,6 @@ namespace ConsoleApp1
             ProcessPlayerChoice(player, clientCar);
         }
 
-        private static void ProcessPlayerChoice(player player, object clientCar)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void ShowClientInfo(object clientCar)
-        {
-            throw new NotImplementedException();
-        }
 
         private static cars GenerateRandomClient()
         {
@@ -271,14 +242,14 @@ namespace ConsoleApp1
             {
                 player.cash -= totalCost;
 
-                var pendingOrder = new OrderParts
+                var pendingParts = new parts_player
                 {
-                    PlayerID = player.ID,
-                    PartID = partId,
+                    ID = player.ID,
+                    ID_part = partId,
                     count = quantity,
                     carsUntilDeivery = 2
                 };
-                Core.Context.OrderParts.Add(pendingOrder);
+                Core.Context.parts.Add(pendingParts);
 
                 Core.Context.SaveChanges();
                 Console.WriteLine($"Заказ на {quantity} {part.Name_part} создан! Поставка через 2 машины.");

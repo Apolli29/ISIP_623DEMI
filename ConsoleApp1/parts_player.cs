@@ -17,6 +17,8 @@ namespace ConsoleApp1
         public int ID_part { get; set; }
         public int count { get; set; }
         public int ID_player { get; set; }
+        public int ID { get; set; }
+        public int carsUntilDeivery { get; set; }
     
         public virtual parts parts { get; set; }
         public virtual player player { get; set; }
