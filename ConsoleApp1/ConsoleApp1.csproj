@@ -34,10 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">
-      <HintPath>..\..\..\..\Desktop\ISIP_623DEMI-praktika7\ConsoleApp1\EntityFramework.dll</HintPath>
+      <HintPath>.\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\..\..\..\Desktop\ISIP_623DEMI-praktika7\ConsoleApp1\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>.\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
