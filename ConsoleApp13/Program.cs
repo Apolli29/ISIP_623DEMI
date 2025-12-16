@@ -352,7 +352,30 @@ class Program
             Console.WriteLine($"{Name} атакует и наносит {damage} урона!");
         }
     }
+    //новый слайм
+    class Slime : Enemy
+    {
+        protected double critChance = 0.2;
+        protected double critMnojitel = 2;
 
+        public Slime() : base("Слайм", 3, 25, 4) { }
+
+        public override void AttackPlayer(Player player)
+        {
+            Random random = new Random();
+            double damage = Attack;
+
+            if (random.NextDouble() < critChance)
+            {
+                damage *= critMnojitel;
+                Console.WriteLine("Критический удар!");
+            }
+
+            player.TakeDamage((int)damage);
+            Console.WriteLine($"{Name} атакует и наносит {damage} урона!");
+        }
+    }
+   
     class Skeleton : Enemy
     {
         public Skeleton() : base("Скелет", 10, 25, 2) { }
@@ -501,6 +524,8 @@ class Program
             FreezeApplied = false;
         }
     }
+
+
     // Класс для сундука
     class Chest
     {
