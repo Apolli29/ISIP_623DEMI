@@ -130,6 +130,51 @@ class Program
                 Console.WriteLine($"\nПобеда! {enemy.Name} повержен!");
             }
         }
+        private void PlayerTurn(Player player, Enemy enemy)
+        {
+            Console.WriteLine("\n--- Ваш ход ---");
+            Console.WriteLine("1 - Атаковать");
+            Console.WriteLine("2 - Защищаться");
+            Console.Write("Выберите действие: ");
 
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    int damage = player.Attack();
+                    Console.WriteLine($"Вы атакуете и наносите {damage} урона!");
+                    enemy.TakeDamage(damage);
+                    break;
+                case "2":
+                    player.Defend();
+                    break;
+                default:
+                    Console.WriteLine("Неверный выбор, пропускаете ход!");
+                    break;
+            }
+        }
+
+        private void EnemyTurn(Player player, Enemy enemy)
+        {
+            Console.WriteLine("\n--- Ход врага ---");
+            enemy.AttackPlayer(player);
+            Console.WriteLine($"Ваше здоровье: {player.HP}");
+        }
+    }
+    class Player
+    {
+        public int HP { get; set; }
+        public Weapon CurrentWeapon { get; set; }
+        public Armor CurrentArmor { get; set; }
+        public bool IsDefending { get; private set; }
+
+        public Player(int StartHP)
+        {
+            HP = StartHP;
+            CurrentWeapon = new Weapon("Кулаки", 5);
+            CurrentArmor = new Armor("Легкая рубашка", 3);
+            IsDefending = false;
+        }
 
        
