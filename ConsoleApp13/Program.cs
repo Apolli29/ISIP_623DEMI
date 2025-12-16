@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Drawing;
+using System.Numerics;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 class Program
 {
-
     static void Main()
     {
         Game game = new Game();
@@ -14,6 +16,7 @@ class Program
     {
         private Random random = new Random();
         private int turnCount = 0;
+        private EnemyFactory enemyFactory = new EnemyFactory();
 
         public void StartGame()
         {
@@ -29,7 +32,7 @@ class Program
                 // Каждые 10 ходов - босс
                 if (turnCount % 10 == 0)
                 {
-                    Enemy boss = GetRandomBoss();
+                    Enemy boss = enemyFactory.CreateBoss();
                     StartBattle(player, boss);
                 }
                 else
@@ -37,7 +40,7 @@ class Program
                     // 50/50 шанс сундука или врага
                     if (random.Next(2) == 0) // 0 - враг, 1 - сундук
                     {
-                        Enemy enemy = GetRandomEnemy();
+                        Enemy enemy = enemyFactory.CreateEnemy();
                         StartBattle(player, enemy);
                     }
                     else
@@ -57,31 +60,6 @@ class Program
                 Console.WriteLine("Нажмите любую клавишу для продолжения...");
                 Console.ReadKey();
             }
-        }
-
-        private Enemy GetRandomEnemy()
-        {
-            int enemyType = random.Next(3);
-            return enemyType switch
-            {
-                0 => new Goblin(),
-                1 => new Skeleton(),
-                2 => new Mage(),
-                _ => new Goblin()
-            };
-        }
-
-        private Enemy GetRandomBoss()
-        {
-            int bossType = random.Next(4);
-            return bossType switch
-            {
-                0 => new VVG(),
-                1 => new Kovalski(),
-                2 => new ArchmageCPP(),
-                3 => new Pestov(),
-                _ => new VVG()
-            };
         }
         public void StartBattle(Player player, Enemy enemy)
         {
@@ -129,13 +107,13 @@ class Program
                 Console.WriteLine($"\nПобеда! {enemy.Name} повержен!");
             }
         }
+
         private void PlayerTurn(Player player, Enemy enemy)
         {
             Console.WriteLine("\n--- Ваш ход ---");
             Console.WriteLine("1 - Атаковать");
             Console.WriteLine("2 - Защищаться");
             Console.Write("Выберите действие: ");
-
             string choice = Console.ReadLine();
 
             switch (choice)
@@ -153,7 +131,6 @@ class Program
                     break;
             }
         }
-
         private void EnemyTurn(Player player, Enemy enemy)
         {
             Console.WriteLine("\n--- Ход врага ---");
@@ -161,6 +138,59 @@ class Program
             Console.WriteLine($"Ваше здоровье: {player.HP}");
         }
     }
+
+    // Простая Фабрика для создания врагов
+    class EnemyFactory
+    {
+        private Random random = new Random();
+
+        public Enemy CreateEnemy()
+        {
+            int enemyType = random.Next(4); // 0-3, включая нового слайма
+
+            return enemyType switch
+            {
+                0 => new Goblin(),
+                1 => new Skeleton(),
+                2 => new Mage(),
+                3 => new Slime(), // Добавлен новый слайм
+                _ => new Goblin()
+            };
+        }
+
+        public Enemy CreateBoss()
+        {
+            int bossType = random.Next(4);
+
+            return bossType switch
+            {
+                0 => new VVG(),
+                1 => new Kovalski(),
+                2 => new ArchmageCPP(),
+                3 => new Pestov(),
+                _ => new VVG()
+            };
+        }
+
+        // Метод для создания конкретного врага по имени (опционально)
+        public Enemy CreateEnemyByName(string enemyName)
+        {
+            return enemyName.ToLower() switch
+            {
+                "goblin" => new Goblin(),
+                "skeleton" => new Skeleton(),
+                "mage" => new Mage(),
+                "slime" => new Slime(),
+                "vvp" => new VVG(),
+                "kovalski" => new Kovalski(),
+                "archmagecpp" => new ArchmageCPP(),
+                "pestov" => new Pestov(),
+                _ => new Goblin()
+            };
+        }
+    }
+
+    // Остальные классы без изменений...
     class Player
     {
         public int HP { get; set; }
@@ -229,9 +259,6 @@ class Program
             IsDefending = true;
             Console.WriteLine("Вы готовитесь к защите на следующую атаку!");
         }
-
-
-
         public void Heal(int amonth)
         {
             HP += amonth;
@@ -241,10 +268,12 @@ class Program
         {
             CurrentWeapon = newWeapon;
         }
+
         public void NewArmor(Armor newArmor)
         {
             CurrentArmor = newArmor;
         }
+
         public void ShowStats()
         {
             Console.WriteLine("======          СТАТИСТИКА ИГРОКА          ======");
@@ -289,14 +318,14 @@ class Program
         }
     }
 
-    class Enemy
+    abstract class Enemy
     {
         public string Name { get; set; } = "";
         public int HP { get; set; }
         public int Attack { get; set; }
         public int Defense { get; set; }
 
-        public Enemy(string name, int attack, int hp, int defense)
+        protected Enemy(string name, int attack, int hp, int defense)
         {
             Name = name;
             HP = hp;
@@ -322,6 +351,7 @@ class Program
         {
             return HP > 0;
         }
+
         public void ShowStats()
         {
             Console.WriteLine($"=== {Name} ===");
@@ -353,7 +383,7 @@ class Program
             Console.WriteLine($"{Name} атакует и наносит {damage} урона!");
         }
     }
-    //новый слайм
+
     class Slime : Enemy
     {
         protected double critChance = 0.2;
@@ -376,7 +406,7 @@ class Program
             Console.WriteLine($"{Name} атакует и наносит {damage} урона!");
         }
     }
-   
+
     class Skeleton : Enemy
     {
         public Skeleton() : base("Скелет", 10, 25, 2) { }
@@ -385,7 +415,6 @@ class Program
         {
             Random random = new Random();
             double damage = Attack;
-
             // Скелет игнорирует защиту игрока
             player.TakeDamage(Attack, true);
             Console.WriteLine($"{Name} игнорирует защиту и наносит {damage} урона!");
@@ -401,6 +430,7 @@ class Program
         {
             FreezeApplied = false;
         }
+
         public override void AttackPlayer(Player player)
         {
             Random random = new Random();
@@ -422,9 +452,9 @@ class Program
         }
     }
 
-    class Boss : Enemy
+    abstract class Boss : Enemy
     {
-        public Boss(string name, int attack, int hp, int defense) : base(name, attack, hp, defense)
+        protected Boss(string name, int attack, int hp, int defense) : base(name, attack, hp, defense)
         {
         }
     }
@@ -433,10 +463,12 @@ class Program
     {
         double critchance = 0.3;
         double critmnojitel = 2;
+
         public VVG() : base("ВВГ", (int)(1.5 * 8), (int)(2 * 30), (int)(1.2 * 3))
         {
 
         }
+
         public override void AttackPlayer(Player player)
         {
             Random random = new Random();
@@ -452,6 +484,7 @@ class Program
             Console.WriteLine($"{Name} атакует и наносит {damage} урона!");
         }
     }
+
     class Kovalski : Boss
     {
         public Kovalski() : base("Ковальски", (int)(1.3 * 10), (int)(2.5 * 25), (int)(1.4 * 2)) { }
@@ -463,6 +496,7 @@ class Program
             Console.WriteLine($"{Name} игнорирует защиту и наносит {Attack} урона!");
         }
     }
+
     class ArchmageCPP : Boss
     {
         double freezeChance = 0.35;
@@ -526,7 +560,6 @@ class Program
         }
     }
 
-    // Класс для сундука
     class Chest
     {
         private Random random = new Random();
@@ -609,6 +642,4 @@ class Program
             }
         }
     }
-
 }
-
