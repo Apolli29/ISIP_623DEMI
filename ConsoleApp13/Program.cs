@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 class Program
 {
@@ -524,7 +525,6 @@ class Program
             FreezeApplied = false;
         }
     }
-
 
     // Класс для сундука
     class Chest
