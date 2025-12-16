@@ -1,4 +1,6 @@
 ﻿using System;
+using static System.Net.Mime.MediaTypeNames;
+using System.Numerics;
 
 class Program
 {
@@ -57,5 +59,77 @@ class Program
                 Console.ReadKey();
             }
         }
+
+        private Enemy GetRandomEnemy()
+        {
+            int enemyType = random.Next(3);
+            return enemyType switch
+            {
+                0 => new Goblin(),
+                1 => new Skeleton(),
+                2 => new Mage(),
+                _ => new Goblin()
+            };
+        }
+
+        private Enemy GetRandomBoss()
+        {
+            int bossType = random.Next(4);
+            return bossType switch
+            {
+                0 => new VVG(),
+                1 => new Kovalski(),
+                2 => new ArchmageCPP(),
+                3 => new Pestov(),
+                _ => new VVG()
+            };
+        }
+        public void StartBattle(Player player, Enemy enemy)
+        {
+            Console.WriteLine($"\n=== ВСТРЕЧА С {enemy.Name.ToUpper()} ===");
+            enemy.ShowStats();
+
+            bool playerFrozen = false;
+
+            while (player.HP > 0 && enemy.IsAlive())
+            {
+                if (!playerFrozen)
+                {
+                    PlayerTurn(player, enemy);
+                    if (!enemy.IsAlive()) break;
+                }
+                else
+                {
+                    Console.WriteLine("Вы заморожены и пропускаете ход!");
+                    playerFrozen = false;
+                }
+
+                EnemyTurn(player, enemy);
+                if (player.HP <= 0) break;
+
+                // Проверяем заморозку
+                if (enemy is Mage mage && mage.FreezeApplied)
+                {
+                    playerFrozen = true;
+                    mage.ResetFreeze();
+                }
+                else if (enemy is ArchmageCPP archmage && archmage.FreezeApplied)
+                {
+                    playerFrozen = true;
+                    archmage.ResetFreeze();
+                }
+                else if (enemy is Pestov pestov && pestov.FreezeApplied)
+                {
+                    playerFrozen = true;
+                    pestov.ResetFreeze();
+                }
+            }
+
+            if (player.HP > 0)
+            {
+                Console.WriteLine($"\nПобеда! {enemy.Name} повержен!");
+            }
+        }
+
 
        
